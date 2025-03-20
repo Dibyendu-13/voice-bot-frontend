@@ -3,7 +3,6 @@ import { io } from "socket.io-client";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import "./App.css";
 
-//https://voice-bot-backend-6gd6.onrender.com
 
 const socket = io("https://voice-bot-backend-6gd6.onrender.com"); // Connect to WebSocket server
 
