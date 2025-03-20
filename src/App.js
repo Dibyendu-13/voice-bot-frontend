@@ -3,7 +3,9 @@ import { io } from "socket.io-client";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import "./App.css";
 
-const socket = io("http://localhost:5001"); // Connect to WebSocket server
+//https://voice-bot-backend-6gd6.onrender.com
+
+const socket = io("https://voice-bot-backend-6gd6.onrender.com"); // Connect to WebSocket server
 
 const App = () => {
     const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
