@@ -1,70 +1,146 @@
-# Getting Started with Create React App
+# 🎙️ AI Voice Assistant  
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a **React-based AI Voice Assistant** that allows users to interact with an AI agent using speech recognition and receive responses in text and speech format. The assistant connects to a WebSocket backend for real-time communication.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## **🚀 Features**
+- **Real-time Speech Recognition**: Uses the Web Speech API for recognizing user input.
+- **AI-Powered Responses**: Sends user queries to the AI backend and receives responses.
+- **Text-to-Speech (TTS)**: Converts AI responses into speech for a natural conversation flow.
+- **Audio Response Handling**: Plays audio responses from the backend if available.
+- **WebSocket Communication**: Uses `socket.io` for real-time interactions.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## **🛠️ Tech Stack**
+- **Frontend**: React.js
+- **Speech Recognition**: [`react-speech-recognition`](https://www.npmjs.com/package/react-speech-recognition)
+- **Text-to-Speech (TTS)**: Web Speech API
+- **WebSocket Communication**: `socket.io-client`
+- **Styling**: CSS
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## **📌 Prerequisites**
+Before running the project, ensure you have:
+- **Node.js** (v14 or later)
+- **npm** (v6 or later)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## **📥 Installation**
+1. **Clone the repository**  
+   ```sh
+   git clone https://github.com/Dibyendu-13/voice-bot-frontend.git
+   cd voice-bot-frontend
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. **Install dependencies**  
+   ```sh
+   npm install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## **▶️ Usage**
+1. **Start the development server**  
+   ```sh
+   npm start
+   ```
+   This will launch the app in your default browser at `http://localhost:3000`.
 
-### `npm run eject`
+2. **Interact with the assistant**:
+   - Click **Start** to begin voice recognition.
+   - Speak your query.
+   - The AI will respond with both text and voice.
+   - Click **Stop** to pause recognition.
+   - Click **Reset** to clear input.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## **📝 Code Explanation**
+### **1. WebSocket Connection**
+The app connects to the WebSocket backend at:
+```js
+const socket = io("http://localhost:5001");
+```
+It listens for AI responses and manages real-time communication.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### **2. Speech Recognition**
+- `react-speech-recognition` handles voice input.
+- The transcript is sent to the backend when recognition stops.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### **3. AI Response Handling**
+- If the response is **text**, it's displayed and spoken using Web Speech API.
+- If the response is **audio**, it is played automatically.
 
-## Learn More
+### **4. Text-to-Speech (TTS)**
+- Uses `speechSynthesis` to read AI responses aloud.
+- Stops any ongoing speech before speaking a new response.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### **5. UI Components**
+- **Start, Stop, Reset buttons** to control voice input.
+- **Status display** for mic activity.
+- **Response box** to show user input and AI replies.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## **🎨 UI Overview**
+### **Home Page**
+```
++---------------------------------+
+| 🎙️ AI Voice Assistant         |
+| Speak and get real-time responses |
++---------------------------------+
+| Microphone: [On/Off]            |
+| [Start]  [Stop]  [Reset]        |
++---------------------------------+
+| User: (Your Speech Input)       |
+| AI: (AI Response)               |
++---------------------------------+
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## **🔧 Customization**
+### **Change AI Backend URL**
+Modify the WebSocket URL in `App.js`:
+```js
+const socket = io("YOUR_BACKEND_URL");
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### **Modify Speech Settings**
+Edit `speakText` function in `App.js`:
+```js
+utterance.lang = 'en-US'; // Change language
+utterance.rate = 1;        // Adjust speed (0.5 - 2)
+```
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## **🐞 Troubleshooting**
+| Issue | Solution |
+|--------|---------|
+| Microphone not working | Ensure mic permissions are enabled in your browser. |
+| AI not responding | Check the WebSocket server URL. |
+| No voice output | Ensure system volume is up and TTS is enabled. |
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## **📜 License**
+This project is licensed under the MIT License.
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## **🤝 Contributing**
+1. Fork the repository.
+2. Create a new branch (`feature-branch`).
+3. Commit your changes (`git commit -m 'Add feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Create a Pull Request.
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## **📬 Contact**
+For queries or suggestions, feel free to reach out! 🚀
