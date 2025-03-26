@@ -1,82 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { io } from "socket.io-client";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import "./App.css";
-
-
-const socket = io("https://voice-bot-backend-6gd6.onrender.com"); // Connect to WebSocket server
 
 const App = () => {
     const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
     const [aiResponse, setAiResponse] = useState("");
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
-    const [audio, setAudio] = useState(null); // State to store the audio response
+    const [audio, setAudio] = useState(null);
+
+
+    const API_URL = "https://voice-bot-backend-1.onrender.com/ask";
 
     useEffect(() => {
         if (!listening && transcript.trim()) {
-            setIsProcessing(true); // Show thinking status
-            setAiResponse(""); // Clear previous AI response
-            socket.emit("userMessage", transcript);
+            setIsProcessing(true);
+            setAiResponse("");
+
+            fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question: transcript }),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        setAiResponse(`Error: ${data.error}`);
+                        setIsProcessing(false);
+                        return;
+                    }
+
+                    setAiResponse(data.text);
+
+                    const audioBlob = new Blob(
+                        [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))],
+                        { type: 'audio/mp3' }
+                    );
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    setAudio(audioUrl);
+                })
+                .catch(err => {
+                    console.error("Fetch error:", err);
+                    setAiResponse("Error connecting to the server.");
+                    setIsProcessing(false);
+                });
         }
     }, [listening, transcript]);
 
+    // Only play audio from backend
     useEffect(() => {
-        // Function to handle speaking text
-        const speakText = (text) => {
-            if (!text) return;
-
-            const synth = window.speechSynthesis;
-            synth.cancel(); // Stop any ongoing speech
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-
-            utterance.onstart = () => setIsSpeaking(true);
-            utterance.onend = () => {
-                setIsSpeaking(false);
-                resetTranscript(); // Clear user input **after** AI finishes speaking
-                setAiResponse(""); // Clear AI response
-            };
-
-            synth.speak(utterance);
-        };
-
-        socket.on("aiResponse", (data) => {
-            if (data === "END_OF_STREAM") {
-                setIsProcessing(false);
-            } else if (data.text) {
-                setAiResponse(data.text); // Store the full response (text)
-                speakText(data.text); // Speak the full response
-            } else if (data.audio) {
-                // Handle audio response
-                const audioBlob = new Blob([data.audio], { type: 'audio/mp3' });
-                const audioUrl = URL.createObjectURL(audioBlob);
-                setAudio(audioUrl); // Store the audio URL
-            }
-        });
-
-        return () => {
-            socket.off("aiResponse");
-        };
-    }, [resetTranscript]); // Empty dependency array since we handle all dependencies inside useEffect
-
-    useEffect(() => {
-        // Function to handle playing audio response
-        const playAudioResponse = () => {
-            if (audio) {
-                const audioElement = new Audio(audio);
-                audioElement.play(); // Play the received audio response
-                audioElement.onended = () => {
-                    setIsSpeaking(false); // Reset speaking state when audio finishes
-                };
-            }
-        };
-
         if (audio) {
-            playAudioResponse(); // Automatically play audio when it's received
+            const audioElement = new Audio(audio);
+            audioElement.play();
+            setIsSpeaking(true);
+            audioElement.onended = () => {
+                setIsSpeaking(false);
+                setIsProcessing(false);
+                resetTranscript();
+            };
         }
-    }, [audio]); // Dependency array contains 'audio' to trigger effect when audio URL changes
+    }, [audio, resetTranscript]); // ✅ include resetTranscript
+
 
     if (!browserSupportsSpeechRecognition) {
         return <span className="error">Your browser does not support speech recognition.</span>;
