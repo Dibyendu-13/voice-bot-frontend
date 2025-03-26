@@ -10,7 +10,8 @@ const App = () => {
     const [audio, setAudio] = useState(null);
 
 
-    const API_URL = "https://voice-bot-backend-58dz.onrender.com/ask";
+
+    const API_URL = "https://fdc5-43-241-193-108.ngrok-free.app/ask";
 
     useEffect(() => {
         if (!listening && transcript.trim()) {
