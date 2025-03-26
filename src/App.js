@@ -4,7 +4,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import "./App.css";
 
 
-const socket = io("https://voice-bot13.netlify.app"); // Connect to WebSocket server
+const socket = io("https://voice-bot-backend-6gd6.onrender.com"); // Connect to WebSocket server
 
 const App = () => {
     const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
