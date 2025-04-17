@@ -60,11 +60,11 @@ function App() {
     formData.append("audio", blob, "recording.webm");
 
     try {
-      const res = await axios.post("http://localhost:5001/ask", formData);
+      const res = await axios.post("https://voice-bot-backend-1.onrender.com/ask", formData);
       setQuestion(res.data.question);
       setAnswer(res.data.answer);
 
-      const audioRes = await axios.get(`http://localhost:5001/${res.data.audio}`, {
+      const audioRes = await axios.get(`https://voice-bot-backend-1.onrender.com/${res.data.audio}`, {
         responseType: "blob",
       });
 
